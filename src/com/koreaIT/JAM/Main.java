@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import com.koreaIT.JAM.util.Util;
 
 import com.koreaIT.JAM.dto.Article;
 
@@ -44,6 +45,9 @@ public class Main {
 				
 				Connection conn = null;
 		        PreparedStatement pstmt = null;
+		        
+		        String regDate = Util.getDateStr();
+                String updateDate = Util.getDateStr();
 				
 				try {
 		            conn = DriverManager.getConnection(url, username, password);
@@ -76,7 +80,7 @@ public class Main {
 		            }
 		        }
 				
-				Article article = new Article(lastArticleId, title, body);
+				Article article = new Article(lastArticleId, regDate, updateDate, title, body);
 				
 				articles.add(article);
 				

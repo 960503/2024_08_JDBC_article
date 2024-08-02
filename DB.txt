@@ -11,3 +11,4 @@ CREATE TABLE article(
 );
 
 SELECT * FROM article;
+SELECT * FROM article ORDER BY id DESC;
