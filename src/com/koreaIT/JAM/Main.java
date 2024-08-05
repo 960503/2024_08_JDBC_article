@@ -100,6 +100,38 @@ public class Main {
     				for (Article article : articles) {
     					System.out.printf("%d	|	%s\n", article.getId(), article.getTitle());
     				}
+    			} else if (cmd.startsWith("article detail ")) {
+    		        try {
+    		        	int id = Integer.parseInt(cmd.split(" ")[2]);
+    		        	
+    		            String sql = "SELECT * FROM article";
+    		            sql += " WHERE id = " + id + ";";
+    		            
+    		            pstmt = conn.prepareStatement(sql);
+    		            rs = pstmt.executeQuery();
+    		            
+    		            Article article = null;
+    		            
+    		            while (rs.next()) {
+    		            	article = new Article(rs.getInt("id"), rs.getString("regDate"), rs.getString("updateDate"), rs.getString("title"), rs.getString("body"));
+    		            }
+    		            
+    		            if (article == null) {
+    		            	System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
+    		            	continue;
+    		            }
+    		            
+    		            System.out.printf("번호 : %d\n", article.getId());
+    		            System.out.printf("작성일 : %s\n", article.getRegDate());
+    		            System.out.printf("수정일 : %s\n", article.getUpdateDate());
+    		            System.out.printf("제목 : %s\n", article.getTitle());
+    		            System.out.printf("내용 : %s\n", article.getBody());
+    		            
+    		        } catch (NumberFormatException e) {
+    		        	System.out.println("명령어를 확인해주세요");
+					} catch (SQLException e) {
+    		            e.printStackTrace();
+    		        }
     			} else if (cmd.startsWith("article modify ")) {
     		        try {
     		        	int id = Integer.parseInt(cmd.split(" ")[2]);
@@ -130,7 +162,7 @@ public class Main {
         				sql += " SET updateDate = NOW()";
         				sql += ", title = '" + title + "'";
         				sql += ", body = '" + body + "'";
-        				sql += "WHERE id = " + id + ";";
+        				sql += " WHERE id = " + id + ";";
     		            
         				pstmt = conn.prepareStatement(sql);
         				pstmt.executeUpdate();
@@ -139,42 +171,8 @@ public class Main {
     		        } catch (NumberFormatException e) {
     		        	System.out.println("명령어를 확인해주세요");
 					} catch (SQLException e) {
-    		            e.printStackTrace(); } 
-    		        } else if (cmd.startsWith("article detail ")) {
-        		        try {
-        		        	int id = Integer.parseInt(cmd.split(" ")[2]);
-        		        	
-        		            String sql = "SELECT * FROM article";
-        		            sql += " WHERE id = " + id + ";";
-        		            
-        		            pstmt = conn.prepareStatement(sql);
-        		            rs = pstmt.executeQuery();
-        		            
-        		            Article article = null;
-        		            
-        		            while (rs.next()) {
-        		            	article = new Article(rs.getInt("id"), rs.getString("regDate"), rs.getString("updateDate"), rs.getString("title"), rs.getString("body"));
-        		            }
-        		            
-        		            if (article == null) {
-        		            	System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
-        		            	continue;
-        		            }
-        		            
-       
-            				pstmt = conn.prepareStatement(sql);
-            				pstmt.executeQuery();
-            				
-            				System.out.printf("번호 : %d\n", id);
-            				System.out.printf("작성일 : %s\n", article.getRegDate()); 
-            				System.out.printf("제목 : %s\n", article.getTitle());
-            				System.out.printf("내용 : %s\n", article.getBody());
-
-        		        } catch (NumberFormatException e) {
-        		        	System.out.println("명령어를 확인해주세요");
-    					} catch (SQLException e) {
-        		            e.printStackTrace();
-        		        }
+    		            e.printStackTrace();
+    		        }
     			} else if (cmd.startsWith("article delete ")) {
     		        try {
     		        	int id = Integer.parseInt(cmd.split(" ")[2]);
@@ -195,11 +193,10 @@ public class Main {
     		            	System.out.printf("%d번 게시물은 존재하지 않습니다\n", id);
     		            	continue;
     		            }
-    		            				
-        				sql = "DELETE article";
-        				sql += "SET id = " + id + ";";
-        				sql += "LIMIT 1;";
-        				
+    		            
+        				sql = "DELETE FROM article";
+        				sql += " WHERE id = " + id + ";";
+    		            
         				pstmt = conn.prepareStatement(sql);
         				pstmt.executeUpdate();
         				
@@ -207,9 +204,9 @@ public class Main {
     		        } catch (NumberFormatException e) {
     		        	System.out.println("명령어를 확인해주세요");
 					} catch (SQLException e) {
-    		            e.printStackTrace(); } 
+    		            e.printStackTrace();
     		        }
-    		        else {
+    			} else {
     				System.out.println("존재하지 않는 명령어 입니다");
     			}
     		}
